@@ -2,8 +2,8 @@ let lastTimeAsText = [];
 let updating = false;
 
 function getTimeAsText() {
-    // const now = new Date();
-    const now = createDate(); //debugging
+    const now = new Date();
+    // const now = createDate(); //debugging
     let hour = now.getHours();
     // convert 24h to 12h
     let am = true;
