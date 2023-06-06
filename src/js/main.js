@@ -2,8 +2,8 @@ let lastTimeAsText = [];
 let updating = false;
 
 function getTimeAsText() {
-    const now = new Date();
-    // const now = createDate(); //debugging
+    // const now = new Date();
+    const now = createDate(); //debugging
     let hour = now.getHours();
     // convert 24h to 12h
     let am = true;
@@ -60,6 +60,7 @@ function convertToText(number) {
       10: "Zehn",
       11: "Elf",
       12: "Zwölf",
+      13: "Eins", //Hust Hust 13 Uhr = 1 Uhr Hust Hust
       20: "Zwanzig",
     };
   
@@ -134,7 +135,7 @@ window.onload = function() {
 
 
 //for testing/debugging
-let i = 0;
+let i = 60 * 12;
 function createDate() {
     let minute = i % 60;
     let hour = Math.floor(i / 60);
