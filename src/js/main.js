@@ -1,7 +1,7 @@
 let lastTimeAsText = [];
 let updating = false;
 
-function getTimeAsText() {
+function getTimeAsGermanText() {
     const now = new Date();
     // const now = createDate(); //debugging
     let hour = now.getHours();
@@ -21,31 +21,31 @@ function getTimeAsText() {
         if(hour === 1)
             timeText = `Es ist Ein Uhr`;
         else
-            timeText = `Es ist ${convertToText(hour)} Uhr`;
+            timeText = `Es ist ${convertToGermanText(hour)} Uhr`;
     else if(minute === 15)
-        timeText = `Es ist Viertel nach ${convertToText(hour)}`;
+        timeText = `Es ist Viertel nach ${convertToGermanText(hour)}`;
     else if(minute === 25)
-        timeText = `Es ist fünf_min vor halb ${convertToText(hour + 1)}`;
+        timeText = `Es ist fünf_min vor halb ${convertToGermanText(hour + 1)}`;
     else if(minute === 30)
-        timeText = `Es ist halb ${convertToText(hour + 1)}`;
+        timeText = `Es ist halb ${convertToGermanText(hour + 1)}`;
     else if(minute === 35)
-        timeText = `Es ist fünf_min nach halb ${convertToText(hour + 1)}`;
+        timeText = `Es ist fünf_min nach halb ${convertToGermanText(hour + 1)}`;
     else if(minute === 45)
         // flip coin for how to say it
         if(Math.random() < 0.5)
-            timeText = `Es ist Viertel vor ${convertToText(hour + 1)}`;
+            timeText = `Es ist Viertel vor ${convertToGermanText(hour + 1)}`;
         else
-            timeText = `Es ist Dreiviertel ${convertToText(hour)}`;
+            timeText = `Es ist Dreiviertel ${convertToGermanText(hour)}`;
     else if(minute < 30)
-        timeText = `Es ist ${convertToText(minute)}_min nach ${convertToText(hour)}`;
+        timeText = `Es ist ${convertToGermanText(minute)}_min nach ${convertToGermanText(hour)}`;
     else
-        timeText = `Es ist ${convertToText(60 - minute)}_min vor ${convertToText(hour + 1)}`;
+        timeText = `Es ist ${convertToGermanText(60 - minute)}_min vor ${convertToGermanText(hour + 1)}`;
     
     
     return [timeText, am];
 }
 
-function convertToText(number) {
+function convertToGermanText(number) {
     const germanNumbers = {
       0: "Zwölf", //Hust Hust 12 Uhr = 0 Uhr Hust Hust
       1: "Eins",
@@ -71,6 +71,67 @@ function convertToText(number) {
     }
 }
 
+function getTimeAsEnglishText() {
+    const now = new Date();
+    // const now = createDate(); //debugging
+    let hour = now.getHours();
+    // convert 24h to 12h
+    let am = true;
+    if(hour > 12){
+        hour -= 12;
+        am = false;
+    }
+    let minute = now.getMinutes();
+    // ceil minutes to next mod 5
+    minute = Math.floor(minute / 5) * 5;
+
+    let timeText = "";
+
+    if(minute === 0)
+        timeText = `It is ${convertToEnglishText(hour)} o'clock`;
+    else if(minute <= 30)
+        timeText = `It is ${convertToEnglishText(minute)} past ${convertToEnglishText(hour)}`;
+    else
+        timeText = `It is ${convertToEnglishText(60 - minute)} to ${convertToEnglishText(hour + 1)}`;
+
+    return [timeText, am];
+}
+
+function convertToEnglishText(number) {
+    const englishNumbers = {
+        0: "Twelve", //Hust Hust 12 Uhr = 0 Uhr Hust Hust
+        1: "One",
+        2: "Two",
+        3: "Three",
+        4: "Four",
+        5: "Five",
+        6: "Six",
+        7: "Seven",
+        8: "Eight",
+        9: "Nine",
+        10: "Ten",
+        11: "Eleven",
+        12: "Twelve",
+        13: "One", //Hust Hust 13 Uhr = 1 Uhr Hust Hust
+        15: "Quarter",
+        20: "Twenty",
+        25: "Twentyfive",
+        30: "Half",
+        35: "Twentyfive",
+        40: "Twenty",
+        45: "Quarter",
+        50: "Ten",
+        55: "Five",
+    };
+    
+    if (number in englishNumbers) {
+        return englishNumbers[number];
+    } else {
+        return number;
+    }
+}
+
+
 function compareArrays(array1, array2) {
     return array1.filter(function(item) {
       return !array2.includes(item);
@@ -93,10 +154,18 @@ function update() {
         return;
     }
     updating = true;
-    const timeText = getTimeAsText();
+    let timeText;
+    let time;
+    if(document.getElementById("german") !== null) {
+        timeText = getTimeAsGermanText();
+        time = timeText[0].toLowerCase().replace("dreiviertel", "drei_min viertel");
+    }
+    else if(document.getElementById("english") !== null) {
+        timeText = getTimeAsEnglishText();
+        time = timeText[0].toLowerCase().replace("o'clock", "oclock");
+    }
     console.log(timeText[0]);
     const am = timeText[1];
-    const time = timeText[0].toLowerCase().replace("dreiviertel", "drei_min viertel");
     const textElements = time.split(" ");
 
     const difference = compareArrays(lastTimeAsText, textElements);
