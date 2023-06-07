@@ -11,3 +11,4 @@ You can of course also use is as a wallpaer on your desktop, e.g. with Lively Wa
 ## Supported Languages
 
 - German
+- English
