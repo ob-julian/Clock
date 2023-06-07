@@ -90,9 +90,9 @@ function getTimeAsEnglishText() {
     if(minute === 0)
         timeText = `It is ${convertToEnglishText(hour)} o'clock`;
     else if(minute <= 30)
-        timeText = `It is ${convertToEnglishText(minute)} past ${convertToEnglishText(hour)}`;
+        timeText = `It is ${convertToEnglishText(minute)}_min past ${convertToEnglishText(hour)}`;
     else
-        timeText = `It is ${convertToEnglishText(60 - minute)} to ${convertToEnglishText(hour + 1)}`;
+        timeText = `It is ${convertToEnglishText(60 - minute)}_min to ${convertToEnglishText(hour + 1)}`;
 
     return [timeText, am];
 }
@@ -185,6 +185,8 @@ function update() {
 
     lastTimeAsText = textElements;
     updating = false;
+
+    return difference.length > 0 || change.length > 0;
 }
 
 window.onload = function() {
@@ -198,6 +200,10 @@ window.onload = function() {
     }
 
     update();
+    const now = new Date();
+    // get miliseconds until next 5 minutes
+    // const milisecondsUntilNext5Minutes = 300000 - now.getMinutes() * 60000 - now.getSeconds() * 1000 - now.getMilliseconds();
+    // setTimeout(setInterval(update, 1000 * 60 * 5), milisecondsUntilNext5Minutes + 100);
     // Update every 1 minute
     setInterval(update, 1000 * 60);
 }
