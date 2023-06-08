@@ -1,4 +1,4 @@
-let lastTimeAsText = "";
+let lastTimeAsText = [];
 let updating = false;
 
 function getTimeAsGermanText() {
@@ -133,8 +133,9 @@ function convertToEnglishText(number) {
     }
 }
 
-
 function compareArrays(array1, array2) {
+    console.log("array1 " + array1);
+    console.log("array2 " + array2);
     return array1.filter(function(item) {
       return !array2.includes(item);
     });
