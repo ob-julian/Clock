@@ -1,4 +1,4 @@
-let lastTimeAsText = [];
+let lastTimeAsText = "";
 let updating = false;
 
 function getTimeAsGermanText() {
@@ -31,8 +31,10 @@ function getTimeAsGermanText() {
     else if(minute === 35)
         timeText = `Es ist fünf_min nach halb ${convertToGermanText(hour + 1)}`;
     else if(minute === 45)
+        if(lastTimeAsText === `Es ist Dreiviertel ${convertToGermanText(hour)}` || lastTimeAsText === `Es ist Viertel vor ${convertToGermanText(hour + 1)}`)
+            return [lastTimeAsText, am]
         // flip coin for how to say it
-        if(Math.random() < 0.5)
+        else if(Math.random() < 0.5)
             timeText = `Es ist Viertel vor ${convertToGermanText(hour + 1)}`;
         else
             timeText = `Es ist Dreiviertel ${convertToGermanText(hour)}`;
