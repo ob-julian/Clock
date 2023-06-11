@@ -134,8 +134,6 @@ function convertToEnglishText(number) {
 }
 
 function compareArrays(array1, array2) {
-    console.log("array1 " + array1);
-    console.log("array2 " + array2);
     return array1.filter(function(item) {
       return !array2.includes(item);
     });
@@ -203,14 +201,28 @@ window.onload = function() {
     }
 
     update();
-    const now = new Date();
-    // get miliseconds until next 5 minutes
-    // const milisecondsUntilNext5Minutes = 300000 - now.getMinutes() * 60000 - now.getSeconds() * 1000 - now.getMilliseconds();
-    // setTimeout(setInterval(update, 1000 * 60 * 5), milisecondsUntilNext5Minutes + 100);
-    // Update every 1 minute
-    setInterval(update, 1000 * 60);
+    setTimeout(interval, milisecondsUntilNext5Minutes() + 1000);
 }
 
+function interval() {
+    update();
+    setInterval(update, 1000 * 60 * 5);
+}
+
+function milisecondsUntilNext5Minutes() {
+    const now = new Date();
+    const minute = now.getMinutes();
+    const seconds = now.getSeconds();
+    const miliseconds = now.getMilliseconds();
+    const milisecondsUntilNext5Minutes = (5 - (minute % 5)) * 60 * 1000 - seconds * 1000 - miliseconds;
+    return milisecondsUntilNext5Minutes;
+}
+
+function milisecondsToTime(millis) {
+    const minutes = Math.floor(millis / 60000);
+    const seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
 
 //for testing/debugging
 let i = 60 * 12;
