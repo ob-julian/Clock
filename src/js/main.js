@@ -1,5 +1,6 @@
 let lastTimeAsText = [];
 let updating = false;
+let show = "seconds"; // seconds, time
 
 function getTimeAsGermanText() {
     const now = new Date();
@@ -148,9 +149,7 @@ function changeCssClass(className, to) {
     }
 }
 
-  
-// "Game loop"
-function update() {
+function updateTime() {
     if (updating) {
         return;
     }
@@ -199,14 +198,24 @@ window.onload = function() {
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
     }
-
-    update();
-    setTimeout(interval, milisecondsUntilNext5Minutes() + 1000);
+    if(show == "time") {
+        updateTime();
+        setTimeout(interval5Min, milisecondsUntilNext5Minutes() + 1000);
+    }
+    else if(show == "seconds") {
+        updateSeconds();
+        setTimeout(interval1Sec, milisecondsUntilNextSecond() + 10);
+    }
 }
 
-function interval() {
-    update();
-    setInterval(update, 1000 * 60 * 5);
+function interval5Min() {
+    updateTime();
+    setInterval(updateTime, 1000 * 60 * 5);
+}
+
+function interval1Sec() {
+    updateSeconds();
+    setInterval(updateSeconds, 1000);
 }
 
 function milisecondsUntilNext5Minutes() {
@@ -216,6 +225,13 @@ function milisecondsUntilNext5Minutes() {
     const miliseconds = now.getMilliseconds();
     const milisecondsUntilNext5Minutes = (5 - (minute % 5)) * 60 * 1000 - seconds * 1000 - miliseconds;
     return milisecondsUntilNext5Minutes;
+}
+
+function milisecondsUntilNextSecond() {
+    const now = new Date();
+    const miliseconds = now.getMilliseconds();
+    const milisecondsUntilNextSecond = 1000 - miliseconds;
+    return milisecondsUntilNextSecond;
 }
 
 function milisecondsToTime(millis) {
@@ -232,4 +248,154 @@ function createDate() {
     console.log(hour + ":" + minute);
     i += 5;
     return new Date(2022, 1, 1, hour, minute);
+}
+
+
+
+// experimental, show seconds
+
+
+// each number is an array of 5x7
+let number = new Array(10);
+
+number[0] = [
+    [0, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [0, 1, 1, 1, 0]
+];
+
+number[1] = [
+    [0, 0, 1, 0, 0],
+    [0, 1, 1, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 1, 1, 1, 0]
+];
+
+number[2] = [
+    [0, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1],
+    [0, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0],
+    [0, 1, 0, 0, 0],
+    [1, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1]
+];
+
+number[3] = [
+    [1, 1, 1, 1, 1],
+    [0, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [0, 1, 1, 1, 0]
+];
+
+number[4] = [
+    [0, 0, 0, 1, 0],
+    [0, 0, 1, 1, 0],
+    [0, 1, 0, 1, 0],
+    [1, 0, 0, 1, 0],
+    [1, 1, 1, 1, 1],
+    [0, 0, 0, 1, 0],
+    [0, 0, 0, 1, 0]
+];
+
+number[5] = [
+    [1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0],
+    [1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [0, 1, 1, 1, 0]
+];
+
+number[6] = [
+    [0, 0, 1, 1, 0],
+    [0, 1, 0, 0, 0],
+    [1, 0, 0, 0, 0],
+    [1, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [0, 1, 1, 1, 0]
+];
+
+number[7] = [
+    [1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 1],
+    [0, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0],
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 0, 0]
+];
+
+number[8] = [
+    [0, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [0, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [0, 1, 1, 1, 0]
+];
+
+number[9] = [
+    [0, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1],
+    [0, 1, 1, 1, 1],
+    [0, 0, 0, 0, 1],
+    [1, 0, 0, 1, 0],
+    [0, 1, 1, 0, 0]
+];
+
+function updateSeconds() {
+    let table = document.getElementsByTagName("table")[0];
+    // get possible tbody
+    if(table.tBodies.length != 0) {
+        table = table.tBodies[0];
+    }
+    let now = new Date();
+    let seconds = now.getSeconds();
+    let seconds1 = Math.floor(seconds / 10);
+    let seconds2 = seconds % 10;
+    let seconds1Array = number[seconds1];
+    let seconds2Array = number[seconds2];
+    for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < 5; j++) {
+            if (seconds1Array[i][j] == 1) {
+                table.rows[i+2].cells[j].style.color = "var(--visible-text)";
+            } else {
+                table.rows[i+2].cells[j].style.color = "var(--faint-text)";
+            }
+            if (seconds2Array[i][j] == 1) {
+                table.rows[i+2].cells[j + 6].style.color = "var(--visible-text)";
+            } else {
+                table.rows[i+2].cells[j + 6].style.color = "var(--faint-text)";
+            }
+        }
+    }
+}
+
+function resetCss() {
+    let table = document.getElementsByTagName("table")[0];
+    // get possible tbody
+    if(table.tBodies.length != 0) {
+        table = table.tBodies[0];
+    }
+
+    for(let i = 0; i < table.rows.length; i++) {
+        for(let j = 0; j < table.rows[i].cells.length; j++) {
+            table.rows[i].cells[j].style.color = "var(--faint-text)";
+        }
+    }
 }
