@@ -1,7 +1,10 @@
 let lastTimeAsText = [];
 let activeInterval;
+let activeTimeout;
 let updating = false;
-let show = 2; // 0 = time, 1 = time, 2 = am/pm
+let changeing = false;
+let show = 0; // 0 = time, 1 = time, 2 = am/pm
+const maxShow = 2;
 
 function getTimeAsGermanText() {
     const now = new Date();
@@ -150,7 +153,7 @@ function changeCssClass(className, to) {
     }
 }
 
-function updateTime() {
+function updateTime(override = false) {
     if (updating) {
         return;
     }
@@ -165,8 +168,7 @@ function updateTime() {
         timeText = getTimeAsEnglishText();
         time = timeText[0].toLowerCase().replace("o'clock", "oclock");
     }
-    console.log(timeText[0]);
-    const am = timeText[1];
+    //console.log(timeText[0]);
     const textElements = time.split(" ");
 
     const difference = compareArrays(lastTimeAsText, textElements);
@@ -175,14 +177,11 @@ function updateTime() {
         changeCssClass(element, "var(--faint-text)");
     }
 
-    const change = compareArrays(textElements, lastTimeAsText);
+    const change = override ? textElements : compareArrays(textElements, lastTimeAsText);
     for (let element of change) {
         //element is the name of the css class we want to edit
         changeCssClass(element, "var(--visible-text)");
     }
-
-    changeCssClass("am", am ? "var(--neutral-color)" : "var(--faint-text)");
-    changeCssClass("pm", am ? "var(--faint-text)" : "var(--neutral-color)");
 
     lastTimeAsText = textElements;
     updating = false;
@@ -196,7 +195,7 @@ function update_AM_PM() {
     }
     updating = true;
     let m = getTimeAsEnglishText()[1];
-    changeCssClass("am", m ? "var(--neutral-color)" : "var(--faint-text)");
+    changeCssClass("am", m ? "var(--visible-color)" : "var(--faint-text)");
     changeCssClass("pm", m ? "var(--faint-text)" : "var(--visible-color)");
 
     updating = false;
@@ -212,37 +211,33 @@ window.onload = function() {
         document.body.classList.add('light-mode');
     }
     updateLoop();
-
-    //
 }
 
 function updateLoop() {
-    // reset all colors
-    const elements = document.getElementsByTagName("td")
-    for (let element of elements) {
-        element.style.color = "var(--faint-text)";
-    }
+    resetCss();
 
-    // stop old interval
+    // stop old interval and timeout
     clearInterval(activeInterval);
+    clearTimeout(activeTimeout);
 
     // start new interval
     if(show === 0) {
-        updateTime();
-        setTimeout(interval5Min, milisecondsUntilNext5Minutes() + 1000);
+        updateTime(true);
+        activeTimeout = setTimeout(interval5Min, milisecondsUntilNext5Minutes() + 1000);
     }
     else if(show === 1) {
         updateSeconds();
-        setTimeout(interval1Sec, milisecondsUntilNextSecond() + 10);
+        activeTimeout = setTimeout(interval1Sec, milisecondsUntilNextSecond() + 10);
     }
     else if(show === 2) {
         update_AM_PM();
-        setTimeout(interval12Hours, milisecondsUntilNext12Hours() + 10);
+        activeTimeout = setTimeout(interval12Hours, milisecondsUntilNext12Hours() + 10);
     }
+    changeing = false;
 }
 
 function interval5Min() {
-    updateTime();
+    updateTime(true);
     activeInterval = setInterval(updateTime, 1000 * 60 * 5);
 }
 
@@ -289,6 +284,20 @@ function milisecondsToTime(millis) {
     if (hours > 0)
         return hours + ":" + minutes + ":" + seconds;
     return minutes + ":" + seconds;
+}
+
+function chanceMode(inc) {
+    if(changeing)
+        return;
+    changeing = true;
+    show += inc;
+    if(show > maxShow) {
+        show = 0;
+    }
+    else if(show < 0) {
+        show = maxShow;
+    }
+    updateLoop();
 }
 
 //for testing/debugging
@@ -454,3 +463,6 @@ function resetCss() {
         }
     }
 }
+
+// lively Wallpaper API
+//function onLivelyWallpaperModeChanged(mode) {
