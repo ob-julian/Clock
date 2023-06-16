@@ -32,6 +32,11 @@
     border-width: 2px;
   }
 
+  button:active{
+    border-width: 4px;
+    transition: 0.05s ease;
+  }
+
   .button-vertical{
     height: 54px;
     width: 104px;
