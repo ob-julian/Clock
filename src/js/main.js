@@ -1,6 +1,7 @@
 let lastTimeAsText = [];
+let activeInterval;
 let updating = false;
-let show = "seconds"; // seconds, time
+let show = 2; // 0 = time, 1 = time, 2 = am/pm
 
 function getTimeAsGermanText() {
     const now = new Date();
@@ -189,6 +190,18 @@ function updateTime() {
     return difference.length > 0 || change.length > 0;
 }
 
+function update_AM_PM() {
+    if (updating) {
+        return;
+    }
+    updating = true;
+    let m = getTimeAsEnglishText()[1];
+    changeCssClass("am", m ? "var(--neutral-color)" : "var(--faint-text)");
+    changeCssClass("pm", m ? "var(--faint-text)" : "var(--visible-color)");
+
+    updating = false;
+}
+
 window.onload = function() {
     //get browser theme
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -198,24 +211,49 @@ window.onload = function() {
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
     }
-    if(show == "time") {
+    updateLoop();
+
+    //
+}
+
+function updateLoop() {
+    // reset all colors
+    const elements = document.getElementsByTagName("td")
+    for (let element of elements) {
+        element.style.color = "var(--faint-text)";
+    }
+
+    // stop old interval
+    clearInterval(activeInterval);
+
+    // start new interval
+    if(show === 0) {
         updateTime();
         setTimeout(interval5Min, milisecondsUntilNext5Minutes() + 1000);
     }
-    else if(show == "seconds") {
+    else if(show === 1) {
         updateSeconds();
         setTimeout(interval1Sec, milisecondsUntilNextSecond() + 10);
+    }
+    else if(show === 2) {
+        update_AM_PM();
+        setTimeout(interval12Hours, milisecondsUntilNext12Hours() + 10);
     }
 }
 
 function interval5Min() {
     updateTime();
-    setInterval(updateTime, 1000 * 60 * 5);
+    activeInterval = setInterval(updateTime, 1000 * 60 * 5);
 }
 
 function interval1Sec() {
     updateSeconds();
-    setInterval(updateSeconds, 1000);
+    activeInterval = setInterval(updateSeconds, 1000);
+}
+
+function interval12Hours() {
+    update_AM_PM();
+    activeInterval = setInterval(update_AM_PM, 1000 * 60 * 60 * 12);
 }
 
 function milisecondsUntilNext5Minutes() {
@@ -234,10 +272,23 @@ function milisecondsUntilNextSecond() {
     return milisecondsUntilNextSecond;
 }
 
+function milisecondsUntilNext12Hours() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    const miliseconds = now.getMilliseconds();
+    const milisecondsUntilNext12Hours = (12 - (hours % 12)) * 60 * 60 * 1000 - minutes * 60 * 1000 - seconds * 1000 - miliseconds;
+    return milisecondsUntilNext12Hours;
+}
+
 function milisecondsToTime(millis) {
-    const minutes = Math.floor(millis / 60000);
-    const seconds = ((millis % 60000) / 1000).toFixed(0);
-    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+    const hours = Math.floor(millis / 3600000).toFixed(0);
+    const minutes = Math.floor((millis % 3600000) / 60000).toFixed(0);
+    const seconds = Math.floor((millis % 60000) / 1000).toFixed(0);
+    if (hours > 0)
+        return hours + ":" + minutes + ":" + seconds;
+    return minutes + ":" + seconds;
 }
 
 //for testing/debugging
@@ -359,6 +410,9 @@ number[9] = [
 ];
 
 function updateSeconds() {
+    if (updating)
+        return;
+    updating = true;
     let table = document.getElementsByTagName("table")[0];
     // get possible tbody
     if(table.tBodies.length != 0) {
@@ -384,6 +438,7 @@ function updateSeconds() {
             }
         }
     }
+    updating = false;
 }
 
 function resetCss() {
