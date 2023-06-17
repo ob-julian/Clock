@@ -36,13 +36,13 @@ function getTimeAsGermanText() {
     else if(minute === 35)
         timeText = `Es ist fünf_min nach halb ${convertToGermanText(hour + 1)}`;
     else if(minute === 45)
-        if(lastTimeAsText === `Es ist Dreiviertel ${convertToGermanText(hour)}` || lastTimeAsText === `Es ist Viertel vor ${convertToGermanText(hour + 1)}`)
+        if(lastTimeAsText === `Es ist Dreiviertel ${convertToGermanText(hour + 1)}` || lastTimeAsText === `Es ist Viertel vor ${convertToGermanText(hour + 1)}`)
             return [lastTimeAsText, am]
         // flip coin for how to say it
         else if(Math.random() < 0.5)
             timeText = `Es ist Viertel vor ${convertToGermanText(hour + 1)}`;
         else
-            timeText = `Es ist Dreiviertel ${convertToGermanText(hour)}`;
+            timeText = `Es ist Dreiviertel ${convertToGermanText(hour + 1)}`;
     else if(minute < 30)
         timeText = `Es ist ${convertToGermanText(minute)}_min nach ${convertToGermanText(hour)}`;
     else
