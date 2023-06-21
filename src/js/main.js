@@ -5,6 +5,7 @@ let updating = false;
 let changeing = false;
 let show = 0; // 0 = time, 1 = time, 2 = am/pm
 const maxShow = 2;
+languages = ["german", "english"];
 
 function getTimeAsGermanText() {
     const now = new Date();
@@ -202,6 +203,13 @@ function update_AM_PM() {
 }
 
 window.onload = function() {
+    // set language Selector
+    const languageSelector = document.getElementById("language");
+    let selct = "";
+    for(let l of languages){
+        selct += `<option value="${l}" ${document.getElementById(l) != null ? "selected" : ""}>${l.charAt(0).toUpperCase() + l.slice(1)}</option>`;
+    }
+    languageSelector.innerHTML = selct;
     //get browser theme
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.remove('light-mode');
@@ -457,11 +465,17 @@ function resetCss() {
         table = table.tBodies[0];
     }
 
-    for(let i = 0; i < table.rows.length; i++) {
-        for(let j = 0; j < table.rows[i].cells.length; j++) {
-            table.rows[i].cells[j].style.color = "var(--faint-text)";
+    for(const element of table.rows) {
+        for(const el of element.cells) {
+            el.style.color = "var(--faint-text)";
         }
     }
+}
+
+function chanceLang() {
+    let lan = document.getElementById("language").value;
+    //switch to language.html
+    window.location.href = lan + ".html";
 }
 
 // lively Wallpaper API

@@ -23,13 +23,24 @@
     font-size: calc(7vmin - 5px);
   }
 
-  button{
+  button, select{
     border-radius: 15%;
     background-color: var(--neutral-color);
     margin: 0.5em;
     padding: 0;
     position: fixed;
     border-width: 2px;
+  }
+
+  select{
+    color: var(--visible-text);
+    position: fixed;
+    right: 1em;
+    padding: 0.3em;
+  }
+
+  select:focus{
+    border-radius: 15% 15% 0 0;
   }
 
   button:active{
@@ -208,6 +219,9 @@
     }
     .button-horizontal{
       display: block;
+    }
+    select{
+      top: 1em;
     }
   }
   
