@@ -99,9 +99,12 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem("show", show);
     }
     updateLoop();
+});
+
+window.onload = function() {
     // remove loading class from body
     document.body.classList.remove('loading');
-});
+}
 
 function setLanguageSelector() {
     const languageSelector = document.getElementById("language");
