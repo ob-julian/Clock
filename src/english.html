@@ -7,11 +7,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="Julian Oberhofer">
         <link rel="stylesheet" href="css/main.css">
-        <script src="js/main.js"></script>
+        <script type="text/javascript" src="js/english.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
       </head>
   <body class="light-mode">
     <h1>A different Clock</h1>
-    <select id="language" onchange="chanceLang()"></select>
+    <div id="select">
+        <select id="theme" onchange="changeTheme()"></select>
+        <br>
+        <select id="language" onchange="changeLang()"></select>
+    </div>
     <table id="english">
         <tr>
             <td class="it">I</td>

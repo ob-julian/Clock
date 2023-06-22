@@ -5,138 +5,12 @@ let updating = false;
 let changeing = false;
 let show = 0; // 0 = time, 1 = time, 2 = am/pm
 const maxShow = 2;
-languages = ["german", "english"];
+const languages = ["german", "english"];
+const themes = ["browser", "light", "dark"];
 
-function getTimeAsGermanText() {
+function isAM() {
     const now = new Date();
-    // const now = createDate(); //debugging
-    let hour = now.getHours();
-    // convert 24h to 12h
-    let am = true;
-    if(hour > 12){
-        hour -= 12;
-        am = false;
-    }
-    let minute = now.getMinutes();
-    // ceil minutes to next mod 5
-    minute = Math.floor(minute / 5) * 5;
-  
-    let timeText = "";
-  
-    if(minute === 0)
-        if(hour === 1)
-            timeText = `Es ist Ein Uhr`;
-        else
-            timeText = `Es ist ${convertToGermanText(hour)} Uhr`;
-    else if(minute === 15)
-        timeText = `Es ist Viertel nach ${convertToGermanText(hour)}`;
-    else if(minute === 25)
-        timeText = `Es ist fünf_min vor halb ${convertToGermanText(hour + 1)}`;
-    else if(minute === 30)
-        timeText = `Es ist halb ${convertToGermanText(hour + 1)}`;
-    else if(minute === 35)
-        timeText = `Es ist fünf_min nach halb ${convertToGermanText(hour + 1)}`;
-    else if(minute === 45)
-        if(lastTimeAsText === `Es ist Dreiviertel ${convertToGermanText(hour + 1)}` || lastTimeAsText === `Es ist Viertel vor ${convertToGermanText(hour + 1)}`)
-            return [lastTimeAsText, am]
-        // flip coin for how to say it
-        else if(Math.random() < 0.5)
-            timeText = `Es ist Viertel vor ${convertToGermanText(hour + 1)}`;
-        else
-            timeText = `Es ist Dreiviertel ${convertToGermanText(hour + 1)}`;
-    else if(minute < 30)
-        timeText = `Es ist ${convertToGermanText(minute)}_min nach ${convertToGermanText(hour)}`;
-    else
-        timeText = `Es ist ${convertToGermanText(60 - minute)}_min vor ${convertToGermanText(hour + 1)}`;
-    
-    
-    return [timeText, am];
-}
-
-function convertToGermanText(number) {
-    const germanNumbers = {
-      0: "Zwölf", //Hust Hust 12 Uhr = 0 Uhr Hust Hust
-      1: "Eins",
-      2: "Zwei",
-      3: "Drei",
-      4: "Vier",
-      5: "Fünf",
-      6: "Sechs",
-      7: "Sieben",
-      8: "Acht",
-      9: "Neun",
-      10: "Zehn",
-      11: "Elf",
-      12: "Zwölf",
-      13: "Eins", //Hust Hust 13 Uhr = 1 Uhr Hust Hust
-      20: "Zwanzig",
-    };
-  
-    if (number in germanNumbers) {
-      return germanNumbers[number];
-    } else {
-        return number;
-    }
-}
-
-function getTimeAsEnglishText() {
-    const now = new Date();
-    // const now = createDate(); //debugging
-    let hour = now.getHours();
-    // convert 24h to 12h
-    let am = true;
-    if(hour > 12){
-        hour -= 12;
-        am = false;
-    }
-    let minute = now.getMinutes();
-    // ceil minutes to next mod 5
-    minute = Math.floor(minute / 5) * 5;
-
-    let timeText = "";
-
-    if(minute === 0)
-        timeText = `It is ${convertToEnglishText(hour)} o'clock`;
-    else if(minute <= 30)
-        timeText = `It is ${convertToEnglishText(minute)}_min past ${convertToEnglishText(hour)}`;
-    else
-        timeText = `It is ${convertToEnglishText(60 - minute)}_min to ${convertToEnglishText(hour + 1)}`;
-
-    return [timeText, am];
-}
-
-function convertToEnglishText(number) {
-    const englishNumbers = {
-        0: "Twelve", //Hust Hust 12 Uhr = 0 Uhr Hust Hust
-        1: "One",
-        2: "Two",
-        3: "Three",
-        4: "Four",
-        5: "Five",
-        6: "Six",
-        7: "Seven",
-        8: "Eight",
-        9: "Nine",
-        10: "Ten",
-        11: "Eleven",
-        12: "Twelve",
-        13: "One", //Hust Hust 13 Uhr = 1 Uhr Hust Hust
-        15: "Quarter",
-        20: "Twenty",
-        25: "Twentyfive",
-        30: "Half",
-        35: "Twentyfive",
-        40: "Twenty",
-        45: "Quarter",
-        50: "Ten",
-        55: "Five",
-    };
-    
-    if (number in englishNumbers) {
-        return englishNumbers[number];
-    } else {
-        return number;
-    }
+    return now.getHours() < 12;
 }
 
 function compareArrays(array1, array2) {
@@ -159,17 +33,8 @@ function updateTime(override = false) {
         return;
     }
     updating = true;
-    let timeText;
-    let time;
-    if(document.getElementById("german") !== null) {
-        timeText = getTimeAsGermanText();
-        time = timeText[0].toLowerCase().replace("dreiviertel", "drei_min viertel");
-    }
-    else if(document.getElementById("english") !== null) {
-        timeText = getTimeAsEnglishText();
-        time = timeText[0].toLowerCase().replace("o'clock", "oclock");
-    }
-    //console.log(timeText[0]);
+    let time = getTimeAsText();
+
     const textElements = time.split(" ");
 
     const difference = compareArrays(lastTimeAsText, textElements);
@@ -195,7 +60,7 @@ function update_AM_PM() {
         return;
     }
     updating = true;
-    let m = getTimeAsEnglishText()[1];
+    let m = isAM();
     changeCssClass("am", m ? "var(--visible-color)" : "var(--faint-text)");
     changeCssClass("pm", m ? "var(--faint-text)" : "var(--visible-color)");
 
@@ -210,13 +75,42 @@ window.onload = function() {
         selct += `<option value="${l}" ${document.getElementById(l) != null ? "selected" : ""}>${l.charAt(0).toUpperCase() + l.slice(1)}</option>`;
     }
     languageSelector.innerHTML = selct;
-    //get browser theme
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.remove('light-mode');
-        document.body.classList.add('dark-mode');
+    // get theme from local storage
+    let theme = localStorage.getItem("theme");
+    if(theme !== null) {
+        setTheme(theme);
     } else {
-        document.body.classList.remove('dark-mode');
-        document.body.classList.add('light-mode');
+        //get browser theme
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+        }
+        // set browser-mode to local storage
+        localStorage.setItem("theme", "browser");
+        theme = "browser";
+    }
+    const themeSelector = document.getElementById("theme");
+    selct = "";
+    for(let i = 0; i < themes.length; i++){
+        const t = themes[i];
+        const tlang = themeLang[i];
+        const themL = tlang.charAt(0).toUpperCase() + tlang.slice(1); 
+        selct += `<option value="${t}" ${theme === t ? "selected" : ""}>${themL}</option>`;
+    }
+    themeSelector.innerHTML += selct;
+    show = localStorage.getItem("show");
+    if(show !== null) {
+        show = parseInt(show);
+        if(show < 0 || show > maxShow) {
+            show = 0;
+            localStorage.setItem("show", show);
+        }
+    } else {
+        show = 0;
+        localStorage.setItem("show", show);
     }
     updateLoop();
 }
@@ -294,7 +188,7 @@ function milisecondsToTime(millis) {
     return minutes + ":" + seconds;
 }
 
-function chanceMode(inc) {
+function changeMode(inc) {
     if(changeing)
         return;
     changeing = true;
@@ -305,6 +199,7 @@ function chanceMode(inc) {
     else if(show < 0) {
         show = maxShow;
     }
+    localStorage.setItem("show", show);
     updateLoop();
 }
 
@@ -472,11 +367,36 @@ function resetCss() {
     }
 }
 
-function chanceLang() {
+function changeLang() {
     let lan = document.getElementById("language").value;
     //switch to language.html
     window.location.href = lan + ".html";
 }
+
+function changeTheme() {
+    let theme = document.getElementById("theme").value;
+    // save in local storage
+    localStorage.setItem("theme", theme);
+    setTheme(theme);
+}
+
+function setTheme(theme) {
+    if (theme == "browser") {
+        //get browser theme
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setTheme("dark");
+        } else {
+            setTheme("light");
+        }
+    } else if (theme == "dark") {
+        document.body.classList.remove('light-mode');
+        document.body.classList.add('dark-mode');
+    } else if (theme == "light") {
+        document.body.classList.remove('dark-mode');
+        document.body.classList.add('light-mode');
+    }
+}
+        
 
 // lively Wallpaper API
 //function onLivelyWallpaperModeChanged(mode) {

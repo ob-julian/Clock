@@ -28,15 +28,22 @@
     background-color: var(--neutral-color);
     margin: 0.5em;
     padding: 0;
-    position: fixed;
     border-width: 2px;
+  }
+
+  #select{
+    position: fixed;
+    right: 1em;
+    text-align: right;
   }
 
   select{
     color: var(--visible-text);
-    position: fixed;
-    right: 1em;
     padding: 0.3em;
+  }
+
+  button{
+    position: fixed;
   }
 
   select:focus{
@@ -220,7 +227,7 @@
     .button-horizontal{
       display: block;
     }
-    select{
+    #select{
       top: 1em;
     }
   }
