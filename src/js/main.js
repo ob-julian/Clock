@@ -67,14 +67,8 @@ function update_AM_PM() {
     updating = false;
 }
 
-window.onload = function() {
-    // set language Selector
-    const languageSelector = document.getElementById("language");
-    let selct = "";
-    for(let l of languages){
-        selct += `<option value="${l}" ${document.getElementById(l) != null ? "selected" : ""}>${l.charAt(0).toUpperCase() + l.slice(1)}</option>`;
-    }
-    languageSelector.innerHTML = selct;
+document.addEventListener('DOMContentLoaded', function() {
+    setLanguageSelector();
     // get theme from local storage
     let theme = localStorage.getItem("theme");
     if(theme !== null) {
@@ -92,15 +86,7 @@ window.onload = function() {
         localStorage.setItem("theme", "browser");
         theme = "browser";
     }
-    const themeSelector = document.getElementById("theme");
-    selct = "";
-    for(let i = 0; i < themes.length; i++){
-        const t = themes[i];
-        const tlang = themeLang[i];
-        const themL = tlang.charAt(0).toUpperCase() + tlang.slice(1); 
-        selct += `<option value="${t}" ${theme === t ? "selected" : ""}>${themL}</option>`;
-    }
-    themeSelector.innerHTML += selct;
+    setThemeSelector(theme);
     show = localStorage.getItem("show");
     if(show !== null) {
         show = parseInt(show);
@@ -113,6 +99,29 @@ window.onload = function() {
         localStorage.setItem("show", show);
     }
     updateLoop();
+    // remove loading class from body
+    document.body.classList.remove('loading');
+});
+
+function setLanguageSelector() {
+    const languageSelector = document.getElementById("language");
+    let selct = "";
+    for(let l of languages){
+        selct += `<option value="${l}" ${document.getElementById(l) != null ? "selected" : ""}>${l.charAt(0).toUpperCase() + l.slice(1)}</option>`;
+    }
+    languageSelector.innerHTML = selct;
+}
+
+function setThemeSelector(theme) {
+    const themeSelector = document.getElementById("theme");
+    selct = "";
+    for(let i = 0; i < themes.length; i++){
+        const t = themes[i];
+        const tlang = themeLang[i];
+        const themL = tlang.charAt(0).toUpperCase() + tlang.slice(1); 
+        selct += `<option value="${t}" ${theme === t ? "selected" : ""}>${themL}</option>`;
+    }
+    themeSelector.innerHTML += selct;
 }
 
 function updateLoop() {
