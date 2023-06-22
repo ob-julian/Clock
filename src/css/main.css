@@ -3,6 +3,10 @@
     color: var(--visible-text);
     transition: background-color 0.5s ease;
   }
+
+  .loading {
+    transition: none;
+  }
   
   table {
     font-family: monospace;
