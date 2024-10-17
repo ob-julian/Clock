@@ -419,15 +419,6 @@ function setTheme(theme) {
     }
 }
 
-document.addEventListener("keydown", function(event) {
-    if(event.key === "ArrowRight") {
-        changeMode(1);
-    }
-    else if(event.key === "ArrowLeft") {
-        changeMode(-1);
-    }
-});
-
 document.addEventListener("fullscreenchange", function() {
     const isFullscreen = document.fullscreenElement !== null;
     changeFullscreen(isFullscreen);
@@ -440,10 +431,16 @@ function changeFullscreen(isFullscreen) {
     document.getElementById("select").style.display = setToValue;
 }
 
-document.addEventListener("keydown", e => {
-    if(e.key === "F11") {
+document.addEventListener("keydown", event => {
+    if(event.key === "ArrowRight") {
+        changeMode(1);
+    }
+    else if(event.key === "ArrowLeft") {
+        changeMode(-1);
+    }
+    else if(event.key === "F11") {
         // override default so that fullscreenchange event is triggered
-        e.preventDefault();
+        event.preventDefault();
         if(document.fullscreenElement === null) {
             try {
                 document.documentElement.requestFullscreen();
