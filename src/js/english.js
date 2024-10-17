@@ -7,7 +7,6 @@ function getTimeAsText() {
 
 function getTimeAsEnglishText() {
     const now = new Date();
-    // const now = createDate(); //debugging
     let hour = now.getHours();
     // convert 24h to 12h
     if(hour > 12)
@@ -30,7 +29,7 @@ function getTimeAsEnglishText() {
 
 function convertToEnglishText(number) {
     const englishNumbers = {
-        0: "Twelve", //Hust Hust 12 Uhr = 0 Uhr Hust Hust
+        0: "Twelve", //English is weird
         1: "One",
         2: "Two",
         3: "Three",
@@ -43,7 +42,7 @@ function convertToEnglishText(number) {
         10: "Ten",
         11: "Eleven",
         12: "Twelve",
-        13: "One", //Hust Hust 13 Uhr = 1 Uhr Hust Hust
+        13: "One", //To prevent out of bounds
         15: "Quarter",
         20: "Twenty",
         25: "Twentyfive",
