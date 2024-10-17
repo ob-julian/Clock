@@ -429,7 +429,49 @@ function changeFullscreen(isFullscreen) {
     document.getElementById("modeDisplay").style.display = setToValue;
     document.getElementById("header").style.display = setToValue;
     document.getElementById("select").style.display = setToValue;
+    document.getElementById("fullscreen-open").style.display = setToValue;
+    if (!isFullscreen) {
+        document.getElementById("fullscreen-exit").style.display = "none";
+    }
 }
+
+function setFullscreen() {
+    try {
+        document.documentElement.requestFullscreen();
+        // only show exit fullscreen button if user entered fullscreen via fullscreen button
+        setTimeout(() => {
+            document.getElementById("fullscreen-exit").style.display = "block";
+        }, 200);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function exitFullscreen() {
+    document.exitFullscreen();
+}
+
+// Throttle function
+function throttle(fn, wait) {
+    let time = Date.now();
+    return function() {
+        if ((time + wait - Date.now()) < 0) {
+            fn();
+            time = Date.now();
+        }
+    };
+}
+
+// Show exit fullscreen button on mousemove
+let timeout;
+document.addEventListener("mousemove", throttle(() => {
+    clearTimeout(timeout);
+    document.getElementById("fullscreen-exit").style.opacity = "1";
+    timeout = setTimeout(() => {
+        document.getElementById("fullscreen-exit").style.opacity = "0";
+    }, 3000);
+}, 100)); // Throttle to 100ms
+
 
 document.addEventListener("keydown", event => {
     if(event.key === "ArrowRight") {
