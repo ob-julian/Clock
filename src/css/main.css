@@ -193,6 +193,20 @@
     padding-right: 1em;
   }
 
+  /* Position the language switcher to the right */
+  #language {
+    position: fixed;
+    top: 1em;
+    right: 1em;
+  }
+
+  /* Position the theme switcher to the left */
+  #theme {
+    position: fixed;
+    top: 1em;
+    left: 1em;
+  }
+
   :root {
     --dark-color: #111;
     --darker-color: #222;

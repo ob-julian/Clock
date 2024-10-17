@@ -215,6 +215,18 @@ function changeMode(inc) {
     updateLoop();
 }
 
+function changeModeAbsolute(value) {
+    if(changeing)
+        return;
+    changeing = true;
+    if (value < 0 || value > maxShow) {
+        value = 0;
+    }
+    show = value;
+    localStorage.setItem("show", show);
+    updateLoop();
+}
+
 //for testing/debugging
 let i = 60 * 12;
 function createDate() {
@@ -379,14 +391,12 @@ function resetCss() {
     }
 }
 
-function changeLang() {
-    let lan = document.getElementById("language").value;
+function changeLang(lan) {
     //switch to language.html
     window.location.href = lan + ".html";
 }
 
-function changeTheme() {
-    let theme = document.getElementById("theme").value;
+function changeTheme(theme) {
     // save in local storage
     localStorage.setItem("theme", theme);
     setTheme(theme);
@@ -408,7 +418,64 @@ function setTheme(theme) {
         document.body.classList.add('light-mode');
     }
 }
+
+document.addEventListener("keydown", function(event) {
+    if(event.key === "ArrowRight") {
+        changeMode(1);
+    }
+    else if(event.key === "ArrowLeft") {
+        changeMode(-1);
+    }
+});
+
+document.addEventListener("fullscreenchange", function() {
+    const isFullscreen = document.fullscreenElement !== null;
+    changeFullscreen(isFullscreen);
+});
+
+function changeFullscreen(isFullscreen) {
+    const setToValue = isFullscreen ? "none" : "block";
+    document.getElementById("modeDisplay").style.display = setToValue;
+    document.getElementById("header").style.display = setToValue;
+    document.getElementById("select").style.display = setToValue;
+}
+
+document.addEventListener("keydown", e => {
+    if(e.key === "F11") {
+        // override default so that fullscreenchange event is triggered
+        e.preventDefault();
+        if(document.fullscreenElement === null) {
+            try {
+                document.documentElement.requestFullscreen();
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
+            document.exitFullscreen();
+        }
+    }
+});
         
 
 // lively Wallpaper API
-//function onLivelyWallpaperModeChanged(mode) {
+function livelyPropertyListener(property, value) {
+    // if this triggers we are in a lively wallpaper environment
+    document.getElementById("select").style.display = "none";
+    if(property === "aditionalUI") {
+        changeFullscreen(!value);
+        document.getElementById("select").style.display = "none";
+    }
+
+    if (property === "theme") {
+        const themeLookup = {
+            0: "auto",
+            1: "light",
+            2: "dark"
+        };
+        changeTheme(themeLookup[value]);
+    }
+
+    if (property === "show") {
+        changeModeAbsolute(value);
+    }
+}
