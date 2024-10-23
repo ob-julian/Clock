@@ -8,6 +8,11 @@ const maxShow = 2;
 const languages = ["german", "english"];
 const themes = ["browser", "light", "dark"];
 
+// lets check if the language.js is loaded correctly
+if (typeof getLanguageSpecificTime !== "function" || typeof numberToText !== "object" || typeof specialCases !== "object") {
+    console.error("language.js is not loaded correctly");
+}
+
 function isAM() {
     const now = new Date();
     return now.getHours() < 12;
@@ -25,6 +30,30 @@ function changeCssClass(className, to) {
         if (element.classList.contains(className)) {
             element.style.color = to;
         }
+    }
+}
+
+function getTimeAsText() {
+    const now = new Date();
+    let hour = now.getHours();
+    // convert 24h to 12h
+    if(hour > 12)
+        hour -= 12;
+    let minute = now.getMinutes();
+    // ceil minutes to next mod 5
+    minute = Math.floor(minute / 5) * 5;
+    let timeText = getLanguageSpecificTime(hour, minute).toLowerCase();
+    for (const key in specialCases) {
+        timeText = timeText.replace(key, specialCases[key]);
+    }
+    return timeText
+}
+
+function convertNumberToText(number) {
+    if (number in numberToText) {
+        return numberToText[number];
+    } else {
+        return number;
     }
 }
 
