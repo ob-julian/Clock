@@ -425,6 +425,8 @@ function changeLang(lan) {
     window.location.href = lan + ".html";
 }
 
+let autoThemeSwitchListener = window.matchMedia('(prefers-color-scheme: dark)');
+
 function changeTheme(theme) {
     // save in local storage
     localStorage.setItem("theme", theme);
@@ -432,6 +434,7 @@ function changeTheme(theme) {
 }
 
 function setTheme(theme) {
+    autoThemeSwitchListener.removeEventListener("change", setTheme);
     if (!["dark", "light"].includes(theme)) {
         //get browser theme
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -439,6 +442,7 @@ function setTheme(theme) {
         } else {
             theme = "light";
         }
+        autoThemeSwitchListener.addEventListener("change", setTheme);
     }
     if (theme == "dark") {
         document.body.classList.remove('light-mode');
