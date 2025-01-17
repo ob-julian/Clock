@@ -432,14 +432,15 @@ function changeTheme(theme) {
 }
 
 function setTheme(theme) {
-    if (theme == "browser") {
+    if (!["dark", "light"].includes(theme)) {
         //get browser theme
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            setTheme("dark");
+            theme = "dark";
         } else {
-            setTheme("light");
+            theme = "light";
         }
-    } else if (theme == "dark") {
+    }
+    if (theme == "dark") {
         document.body.classList.remove('light-mode');
         document.body.classList.add('dark-mode');
     } else if (theme == "light") {
