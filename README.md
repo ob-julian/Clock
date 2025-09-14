@@ -25,7 +25,7 @@ You can of course also use it as a wallpaper on your desktop, e.g. with Lively W
 
 This project has implemented the Live Wallpaper API so that you can customize a few things for your wallpaper, like the color theme.
 
-If you do not want any customization, you can also add [https://oberhofer.ddns.net/clock/english](https://oberhofer.ddns.net/clock/english) or the language you prefer as a wallpaper.
+If you do not want any customization, you can also add [https://oberflow.dev/clock/english](https://oberflow.dev/clock/english) or the language you prefer as a wallpaper.
 The Thumbnail will be horrendous, but the wallpaper will work just fine.
 
 ### Other Wallpaper Engines
